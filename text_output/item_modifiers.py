@@ -11,6 +11,8 @@ def body(i, hsv_cone, rgb_cone, rgb_line, v_steps, colors_per_hue, grayscale, pi
     color = f'{rgb_color[0]},{rgb_color[1]},{rgb_color[2]}'
     corresponding_pigment = rgb_cone[colors.corresponding_pigment_index(i, colors_per_hue)]
     pigment_dust_id = common.pigment_dust_id(corresponding_pigment)
+    # I wanted to have only pigment colors be part of looted clothing, but that's irrelevant as you can craft pigments
+    # from any dye. That would've probably belonged in loot.xml.
     drop_chance = 'cosmetic_install_chance=".1"' if pigment else ''
     open_action = f'''<property class="Action0">
 			<property name="Class" value="OpenBundle"/>
@@ -23,7 +25,8 @@ def body(i, hsv_cone, rgb_cone, rgb_line, v_steps, colors_per_hue, grayscale, pi
 		<property name="DescriptionKey" value="modDyeGroupDesc"/>
 		<property name="CustomIcon" value="modDyeWhite"/> <property name="CustomIconTint" value="{color}"/>
 		<property name="Material" value="Mpaint"/>
-		<property name="Weight" value="20"/>
+		<property name="Weight" value="0"/>
+	    <property name="SellableToTrader" value="false"/>
 		{open_action}
 		<item_property_overrides name="*">
 			<property name="TintColor" value="{color}"/>
