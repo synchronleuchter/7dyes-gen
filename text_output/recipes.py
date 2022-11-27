@@ -86,7 +86,7 @@ f'''<append xpath="/recipes"><recipe name="{common.black_id()}" craft_area="camp
 '''
     if common.color_id(rgb_color, pigment) == common.white_id():
         retval += \
-f'''<append xpath="/recipes"><recipe name="{common.white_id()}" craft_area="campfire" count="1" craft_time="1">
+f'''<append xpath="/recipes"><recipe name="{common.white_id()}" craft_area="chemistryStation" count="1" craft_time="1">
     <ingredient name="resourcePotassiumNitratePowder" count="10"/>
     <ingredient name="drinkJarRiverWater" count="1"/>
 </recipe></append>

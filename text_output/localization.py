@@ -43,6 +43,12 @@ def special_name_suffix(rgb_col, hsv_color):
     sat = hsv_color[1]
     val = hsv_color[2]
 
+    if rgb_col == [0.0, 0.0, 0.0]:
+        return '(Black)'
+
+    if rgb_col == [255.0, 255.0, 255.0]:
+        return '(White)'
+
     if 0.0 < sat <= 0.25 and val >= 0.5:
         retval += '(Pale '
     elif 0.0 < sat <= 0.25 and val < 0.5:
@@ -73,7 +79,7 @@ def body(i, hsv_space, rgb_cone, rgb_line, v_steps, colors_per_hue, grayscale, p
     if grayscale:
         dye_name = f'7Dyes[tm] Grayscale Dye: {round(hsv_color[2] * 100):03d}'
 
-    dye_name += special_name_suffix(rgb_color, hsv_color)
+    dye_name += ' ' + special_name_suffix(rgb_color, hsv_color)
 
     retval = f'''{common.color_id(rgb_color, pigment)},item_modifiers,mod,,,{dye_name},,{dye_name},{dye_name},{dye_name},{dye_name},{dye_name},{dye_name},{dye_name},{dye_name},{dye_name},{dye_name},{dye_name},{dye_name},{dye_name}'''
 

@@ -30,8 +30,8 @@ if __name__ == '__main__':
     # These are exponential steps. I had a binary subdivision sampling in mind, but then noticed that there would
     # be no backwards steps (anti-s, anti-v). This (and the grayscale optimization) explain the somewhat weird
     # sampling.
-    s_step_depth = 4
-    v_step_depth = 4
+    s_step_depth = 3
+    v_step_depth = 3
     h_steps = 48
 
     # If you want to shift all the hue sample, you can do that here.

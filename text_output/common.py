@@ -63,7 +63,7 @@ def generate_mod_info():
     <Name value="7 Dyes to dye for" />
     <Description value="Generated mod that potentially adds heaps of dyes with its own dye mixing recipes. 'Open' dye bottles to turn them into pigment powder." />
     <Author value="Synchronleuchter" />
-    <Version value="1.0" />
+    <Version value="1.1" />
 </ModInfo>
 </xml>
 '''
