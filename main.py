@@ -62,11 +62,6 @@ if __name__ == '__main__':
                          2 ** v_step_depth)
     common.generate_mod_info()
 
-    # TODO: Descriptions for white and black
-    # TODO: Descriptions for pigments
-    # TODO: Descriptions for generics
-    # TODO: Generate a whole mod with ModInfo, not just bare files
-
     # Debugging purposes: For each color, show the next less saturated one. Think of this as a recipe mapping table.
     desaturated_cone = []
     for i in range(0, len(rgb_cone)):

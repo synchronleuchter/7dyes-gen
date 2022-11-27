@@ -8,6 +8,17 @@ suffix = '''</configs>'''
 
 def body(i, hsv_cone, rgb_cone, rgb_line, v_steps, colors_per_hue, grayscale, pigment=False):
     rgb_color = rgb_cone[i] if not grayscale else rgb_line[i]
+
+    description_key = 'mod7DyesGroupDesc'
+    if pigment:
+        description_key += 'Pigment'
+    if grayscale:
+        description_key += 'Grayscale'
+    if common.color_id(rgb_color, pigment) == common.white_id():
+        description_key += 'White'
+    if common.color_id(rgb_color, pigment) == common.black_id():
+        description_key += 'Black'
+
     color = f'{rgb_color[0]},{rgb_color[1]},{rgb_color[2]}'
     corresponding_pigment = rgb_cone[colors.corresponding_pigment_index(i, colors_per_hue)]
     pigment_dust_id = common.pigment_dust_id(corresponding_pigment)
@@ -22,7 +33,7 @@ def body(i, hsv_cone, rgb_cone, rgb_line, v_steps, colors_per_hue, grayscale, pi
     return f'''<append xpath="/item_modifiers">
 	<item_modifier name="{common.color_id(rgb_color, pigment)}" installable_tags="clothing,armor,weapon,tool,vehicle,drone" modifier_tags="dye" type="attachment" {drop_chance}>
 		<property name="Extends" value="modGeneralMaster"/>
-		<property name="DescriptionKey" value="modDyeGroupDesc"/>
+		<property name="DescriptionKey" value="{description_key}"/>
 		<property name="CustomIcon" value="modDyeWhite"/> <property name="CustomIconTint" value="{color}"/>
 		<property name="Material" value="Mpaint"/>
 		<property name="Weight" value="0"/>

@@ -23,6 +23,7 @@ def body(i, hsv_cone, rgb_cone, rgb_line, v_steps, colors_per_hue, grayscale, pi
         <property name="Group" value="Resources"/>
         <property name="CustomIcon" value="resourceCement"/>
         <property name="CustomIconTint" value="{color}"/>
+		<property name="DescriptionKey" value="resource7DyesPigmentPowder"/>
     </item></append>'''
     else:
         return ''

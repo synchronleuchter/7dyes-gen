@@ -56,17 +56,17 @@ def generate_file(filename, module, hsv_cone, rgb_cone, hsv_line, rgb_line, colo
 
 
 def generate_mod_info():
-    mod_info = '''
-    <?xml version="1.0" encoding="UTF-8" ?>
-    <xml>
-    	<ModInfo>
-    		<Name value="7 Dyes to dye for" />
-    		<Description value="Generated mod that potentially adds heaps of dyes with its own dye mixing recipes. 'Open' dye bottles to turn them into pigment powder." />
-    		<Author value="Synchronleuchter" />
-    		<Version value="0.1" />
-    	</ModInfo>
-    </xml>
-    '''
+    mod_info = \
+'''<?xml version="1.0" encoding="UTF-8" ?>
+<xml>
+<ModInfo>
+    <Name value="7 Dyes to dye for" />
+    <Description value="Generated mod that potentially adds heaps of dyes with its own dye mixing recipes. 'Open' dye bottles to turn them into pigment powder." />
+    <Author value="Synchronleuchter" />
+    <Version value="0.1" />
+</ModInfo>
+</xml>
+'''
     original_stdout = sys.stdout
     if not os.path.exists(out_dir):
         os.mkdir(out_dir)
