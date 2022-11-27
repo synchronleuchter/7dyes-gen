@@ -3,6 +3,9 @@ import sys
 
 import colors
 
+out_dir = '7dyes/'
+config_dir = out_dir + 'Config/'
+
 
 def id_suffix(rgb_color) :
     return f'{rgb_color[0]}_{rgb_color[1]}_{rgb_color[2]}'
@@ -30,11 +33,13 @@ def generate_file(filename, module, hsv_cone, rgb_cone, hsv_line, rgb_line, colo
     original_stdout = sys.stdout
     rgb_rd = list(map(colors.map_round, rgb_cone))
     rgb_ld = list(map(colors.map_round, rgb_line))
-    out_dir = 'out/'
 
     if not os.path.exists(out_dir):
         os.mkdir(out_dir)
-    with open(out_dir + filename, 'w') as file:
+    if not os.path.exists(config_dir):
+        os.mkdir(config_dir)
+
+    with open(config_dir + filename, 'w') as file:
         sys.stdout = file
         print(module.prefix)
         for i in range(0, len(rgb_cone)):
@@ -47,4 +52,25 @@ def generate_file(filename, module, hsv_cone, rgb_cone, hsv_line, rgb_line, colo
                 print(body)
         print(module.suffix, end='')
 
+    sys.stdout = original_stdout
+
+
+def generate_mod_info():
+    mod_info = '''
+    <?xml version="1.0" encoding="UTF-8" ?>
+    <xml>
+    	<ModInfo>
+    		<Name value="7 Dyes to dye for" />
+    		<Description value="Generated mod that potentially adds heaps of dyes with its own dye mixing recipes. 'Open' dye bottles to turn them into pigment powder." />
+    		<Author value="Synchronleuchter" />
+    		<Version value="0.1" />
+    	</ModInfo>
+    </xml>
+    '''
+    original_stdout = sys.stdout
+    if not os.path.exists(out_dir):
+        os.mkdir(out_dir)
+    with open(out_dir + 'ModInfo.xml', 'w') as file:
+        sys.stdout = file
+        print(mod_info)
     sys.stdout = original_stdout

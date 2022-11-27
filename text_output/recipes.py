@@ -53,7 +53,7 @@ f'''<append xpath="/recipes"><recipe name="{common.color_id(devalued)}" count="2
 
     # Reset pigmentation: Cook a dye to concentrate it. Yes, this allows infinite replication. This is intended.
     # We do it this way because 7dtd's recipe graph must be acyclic.
-    if not pigment and not grayscale:
+    if pigment:
         corresponding_pigment = rgb_cone[colors.corresponding_pigment_index(i, colors_per_hue)]
         pigment_dust_id = common.pigment_dust_id(corresponding_pigment)
         retval += \
@@ -66,6 +66,33 @@ f'''<append xpath="/recipes"><recipe name="{common.color_id(corresponding_pigmen
 f'''<append xpath="/recipes"><recipe name="{common.color_id(corresponding_pigment, True)}" craft_area="campfire" count="1" craft_time="3">
 	<ingredient name="{pigment_dust_id}" count="1"/>
 	<ingredient name="drinkJarRiverWater" count="1"/>
+</recipe></append>
+'''
+    # Generate static recipes for black and white dye because they are the lifeblood of transforming dyes.
+    if common.color_id(rgb_color, pigment) == common.black_id():
+        retval += \
+f'''<append xpath="/recipes"><recipe name="{common.black_id()}" craft_area="chemistryStation" count="1" craft_time="1">
+    <ingredient name="resourcePotassiumNitratePowder" count="10"/>
+    <ingredient name="drinkJarRiverWater" count="1"/>
+</recipe></append>
+'''
+        retval += \
+f'''<append xpath="/recipes"><recipe name="{common.black_id()}" craft_area="campfire" count="1" craft_time="3">
+    <ingredient name="resourcePotassiumNitratePowder" count="10"/>
+    <ingredient name="drinkJarRiverWater" count="1"/>
+</recipe></append>
+'''
+    if common.color_id(rgb_color, pigment) == common.white_id():
+        retval += \
+f'''<append xpath="/recipes"><recipe name="{common.white_id()}" craft_area="campfire" count="1" craft_time="1">
+    <ingredient name="resourcePotassiumNitratePowder" count="10"/>
+    <ingredient name="drinkJarRiverWater" count="1"/>
+</recipe></append>
+'''
+        retval += \
+f'''<append xpath="/recipes"><recipe name="{common.white_id()}" craft_area="campfire" count="1" craft_time="3">
+    <ingredient name="resourcePotassiumNitratePowder" count="10"/>
+    <ingredient name="drinkJarRiverWater" count="1"/>
 </recipe></append>
 '''
     return retval

@@ -30,9 +30,9 @@ if __name__ == '__main__':
     # These are exponential steps. I had a binary subdivision sampling in mind, but then noticed that there would
     # be no backwards steps (anti-s, anti-v). This (and the grayscale optimization) explain the somewhat weird
     # sampling.
-    s_step_depth = 1
-    v_step_depth = 1
-    h_steps = 2
+    s_step_depth = 4
+    v_step_depth = 4
+    h_steps = 48
 
     # If you want to shift all the hue sample, you can do that here.
     h_offset_degrees = 0.0
@@ -60,13 +60,12 @@ if __name__ == '__main__':
     common.generate_file('recipes.xml', recipes, hsv_cone, rgb_cone, hsv_line, rgb_line, colors_per_hue, 2 ** v_step_depth)
     common.generate_file('items.xml', items, hsv_cone, rgb_cone, hsv_line, rgb_line, colors_per_hue,
                          2 ** v_step_depth)
+    common.generate_mod_info()
 
-    # TODO: Recipe for white
-    # TODO: Recipe for black
     # TODO: Descriptions for white and black
     # TODO: Descriptions for pigments
     # TODO: Descriptions for generics
-    # TODO: Check for exploits (selling dyes, scrapping for infinite paint)
+    # TODO: Generate a whole mod with ModInfo, not just bare files
 
     # Debugging purposes: For each color, show the next less saturated one. Think of this as a recipe mapping table.
     desaturated_cone = []
