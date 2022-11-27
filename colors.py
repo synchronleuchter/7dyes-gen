@@ -2,13 +2,13 @@ def identity(x):
     return x
 
 
-def sample_hsv_cone(hue_steps=26, saturation_step_depth=2, value_step_depth=2, s_sampler=identity, v_sampler=identity):
+def sample_hsv_cone(hue_steps=26, saturation_step_depth=2, value_step_depth=2, s_sampler=identity, v_sampler=identity, h_offset=0.0):
     result_list = []
     delta_h = 360.0 / hue_steps
 
     for h_step in range(0, hue_steps):
         result_list.extend(
-            sample_hue_triangle(h_step * delta_h, saturation_step_depth, value_step_depth, s_sampler, v_sampler))
+            sample_hue_triangle((h_step * delta_h + h_offset) % 360.0, saturation_step_depth, value_step_depth, s_sampler, v_sampler))
     return result_list
 
 
@@ -76,3 +76,25 @@ def map_round(lst):
 
 def rounded_colors(lst):
     return list(map(map_round, lst))
+
+
+def desaturated_index(index, v_steps, colors_per_hue):
+    local_index = index % colors_per_hue
+    if local_index >= v_steps:
+        return index - v_steps
+    else:
+        # Negative index = line index, not cone index
+        return -((index % colors_per_hue) % v_steps) - 1
+
+
+def devalued_index(index, v_steps, colors_per_hue):
+    local_index = index % colors_per_hue
+    if local_index % v_steps > 0:
+        return index - 1
+    else:
+        # Magic Number: means black
+        return -1
+
+
+def corresponding_pigment_index(index, colors_per_hue):
+    return (index // colors_per_hue) * colors_per_hue + (colors_per_hue - 1)

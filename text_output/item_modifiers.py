@@ -1,14 +1,22 @@
 from text_output import common
-
+import colors
 
 prefix = '''<configs>'''
 
 suffix = '''</configs>'''
 
 
-def body(hsv_color, rgb_color, pigment=False):
+def body(i, hsv_cone, rgb_cone, rgb_line, v_steps, colors_per_hue, grayscale, pigment=False):
+    rgb_color = rgb_cone[i] if not grayscale else rgb_line[i]
     color = f'{rgb_color[0]},{rgb_color[1]},{rgb_color[2]}'
-    drop_chance = 'cosmetic_install_chance=".1"' if pigment else ""
+    corresponding_pigment = rgb_cone[colors.corresponding_pigment_index(i, colors_per_hue)]
+    pigment_dust_id = common.pigment_dust_id(corresponding_pigment)
+    drop_chance = 'cosmetic_install_chance=".1"' if pigment else ''
+    open_action = f'''<property class="Action0">
+			<property name="Class" value="OpenBundle"/>
+			<property name="Create_item" value="{pigment_dust_id}"/>
+			<property name="Create_item_count" value="1"/>
+		</property>''' if not grayscale else ''
     return f'''<append xpath="/item_modifiers">
 	<item_modifier name="{common.color_id(rgb_color, pigment)}" installable_tags="clothing,armor,weapon,tool,vehicle,drone" modifier_tags="dye" type="attachment" {drop_chance}>
 		<property name="Extends" value="modGeneralMaster"/>
@@ -16,7 +24,7 @@ def body(hsv_color, rgb_color, pigment=False):
 		<property name="CustomIcon" value="modDyeWhite"/> <property name="CustomIconTint" value="{color}"/>
 		<property name="Material" value="Mpaint"/>
 		<property name="Weight" value="20"/>
-
+		{open_action}
 		<item_property_overrides name="*">
 			<property name="TintColor" value="{color}"/>
 			<property name="CustomIconTint" value="{color}"/>
