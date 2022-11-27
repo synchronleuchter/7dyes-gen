@@ -17,16 +17,64 @@ mod7DyesGroupDescGrayscaleBlack,item_modifiers,mod,,,{s_black},,{s_black},{s_bla
 resource7DyesPigmentPowder,item_modifiers,mod,,,{s_powder},,{s_powder},{s_powder},{s_powder},{s_powder},{s_powder},{s_powder},{s_powder},{s_powder},{s_powder},{s_powder},{s_powder},{s_powder},{s_powder}'''
 
 
+hue_dict = {
+    0: 'Red',
+    30: 'Orange',
+    60: 'Yellow',
+    90: 'Lime',
+    120: 'Green',
+    150: 'Mint',
+    180: 'Cyan',
+    210: 'Aqua',
+    240: 'Blue',
+    270: 'Purple',
+    300: 'Magenta',
+    330: 'Berry'
+}
+
+
+def around(hue, reference_hue, delta=5.0):
+    return (hue - delta) % 360.0 < reference_hue <= (hue + delta) % 360.0
+
+
+def special_name_suffix(rgb_col, hsv_color):
+    retval = ''
+    hue = hsv_color[0]
+    sat = hsv_color[1]
+    val = hsv_color[2]
+
+    if 0.0 < sat <= 0.25 and val >= 0.5:
+        retval += '(Pale '
+    elif 0.0 < sat <= 0.25 and val < 0.5:
+        retval += '(Washed-out '
+    elif 0.25 < sat and val < 0.5:
+        retval += '(Dark '
+    elif 1.0 == sat and 1.0 == val:
+        retval += '(Pure '
+
+    # FIXME: This doesn't choose the closest match
+    if retval != '':
+        for key in hue_dict.keys():
+            if around(hue, key):
+                retval += hue_dict[key] + ')'
+                break
+
+    if retval != '' and retval[-1] != ')':
+        retval = ''
+
+    return retval
+
+
 def body(i, hsv_space, rgb_cone, rgb_line, v_steps, colors_per_hue, grayscale, pigment=False):
-    # TODO: Nicknames for dyes? Have a dictionary from rgb or hsv to names and append in braces for better search?
-    # Over-engineered variation: Intervals for names? Quadrants? (Pure, Dark, Pale, Washed-out) x (Red, Orange,...)
-    # Even more over-engineering: Overrides (dark orange = brown)?
     rgb_color = rgb_cone[i] if not grayscale else rgb_line[i]
     hsv_color = hsv_space[i] if not grayscale else hsv_space[i]
     color = f'{round(hsv_color[0]):03d}-{round(hsv_color[1] * 100):03d}-{round(hsv_color[2] * 100):03d}'
     dye_name = f'7Dyes[tm] Dye: {color} (Pigment)' if pigment else f'7Dyes[tm] Dye: {color}'
     if grayscale:
         dye_name = f'7Dyes[tm] Grayscale Dye: {round(hsv_color[2] * 100):03d}'
+
+    dye_name += special_name_suffix(rgb_color, hsv_color)
+
     retval = f'''{common.color_id(rgb_color, pigment)},item_modifiers,mod,,,{dye_name},,{dye_name},{dye_name},{dye_name},{dye_name},{dye_name},{dye_name},{dye_name},{dye_name},{dye_name},{dye_name},{dye_name},{dye_name},{dye_name}'''
 
     if pigment:

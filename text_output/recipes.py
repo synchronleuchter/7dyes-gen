@@ -32,7 +32,9 @@ def body(i, hsv_space, rgb_cone, rgb_line, v_steps, colors_per_hue, grayscale, p
     if common.color_id(rgb_color, pigment) != common.white_id():
         desaturated = des_gs[des_idx]
         if common.color_id(desaturated) != common.white_id():
-            retval += \
+            # Do not waste pigments by turning them into gray.
+            if colors.is_grayscale(rgb_color) or not colors.is_grayscale(desaturated):
+                retval += \
 f'''<append xpath="/recipes"><recipe name="{common.color_id(desaturated)}" count="2" craft_time="1">
     <ingredient name="{common.color_id(rgb_color, pigment)}" count="1"/>
     <ingredient name="{common.white_id()}" count="1"/>

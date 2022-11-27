@@ -98,3 +98,7 @@ def devalued_index(index, v_steps, colors_per_hue):
 
 def corresponding_pigment_index(index, colors_per_hue):
     return (index // colors_per_hue) * colors_per_hue + (colors_per_hue - 1)
+
+
+def is_grayscale(rgb_color):
+    return rgb_color[0] == rgb_color[1] == rgb_color[2]
