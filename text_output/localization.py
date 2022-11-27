@@ -3,7 +3,7 @@ from text_output import common
 
 prefix = 'Key,File,Type,UsedInMainMenu,NoTranslate,english,Context / Alternate Text,german,latam,french,italian,japanese,koreana,polish,brazilian,russian,turkish,schinese,tchinese,spanish'
 
-s_normal_dye = '"A pre-mixed 7Dyes[tm] dye bottle. This can be mixed further with licensed 7Dyes[tm] black or white dyes.\\n\\nWhen opening the bottle, beware that 7Dyes[tm] dyes take far less than 7 days to oxidize. You can turn the dye into pure pigment powder which you can in turn solve in water to make new, bright dye."'
+s_normal_dye = '"A pre-mixed 7Dyes[tm] dye bottle. This can be mixed further with licensed 7Dyes[tm] black or white dyes.\\n\\nWhen opening the bottle, beware that 7Dyes[tm] dyes take far less than 7 days to oxidize. You can turn the dye into pure pigment powder which you can in turn dissolve in water to make new, bright dye."'
 s_pigment = '"A patented 7Dyes[tm] pigment dye bottle. This dye is so intense, you could probably dilute it a million times and still hurt your eyes from how intense the color is."'
 s_grayscale = 'A 7Dyes[tm] Grayscale dye bottle. This can be brightened or darkened with licensed 7Dyes[tm] black or white dyes.'
 s_white = 'The purest 7Dyes[tm] white dye. Use this to desaturate (or brighten) other licensed 7Dyes[tm] dyes.'
