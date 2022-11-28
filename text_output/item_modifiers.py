@@ -21,7 +21,8 @@ def body(i, hsv_cone, rgb_cone, rgb_line, v_steps, colors_per_hue, grayscale, pi
 
     color = f'{rgb_color[0]},{rgb_color[1]},{rgb_color[2]}'
     corresponding_pigment = rgb_cone[colors.corresponding_pigment_index(i, colors_per_hue)]
-    pigment_dust_id = common.pigment_dust_id(corresponding_pigment)
+    # Grayscale colors can at least be turned into water, so they don't clutter up the inventory.
+    pigment_dust_id = common.pigment_dust_id(corresponding_pigment) if not grayscale else 'drinkJarRiverWater'
     # I wanted to have only pigment colors be part of looted clothing, but that's irrelevant as you can craft pigments
     # from any dye. That would've probably belonged in loot.xml.
     drop_chance = 'cosmetic_install_chance=".1"' if pigment else ''
@@ -29,7 +30,7 @@ def body(i, hsv_cone, rgb_cone, rgb_line, v_steps, colors_per_hue, grayscale, pi
 			<property name="Class" value="OpenBundle"/>
 			<property name="Create_item" value="{pigment_dust_id}"/>
 			<property name="Create_item_count" value="1"/>
-		</property>''' if not grayscale else ''
+		</property>'''
     return f'''<append xpath="/item_modifiers">
 	<item_modifier name="{common.color_id(rgb_color, pigment)}" installable_tags="clothing,armor,weapon,tool,vehicle,drone" modifier_tags="dye" type="attachment" {drop_chance}>
 		<property name="Extends" value="modGeneralMaster"/>
