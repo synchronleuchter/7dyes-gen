@@ -5,9 +5,13 @@ import colors
 
 out_dir = '7dyes/'
 config_dir = out_dir + 'Config/'
+# Grayscale recipes are made with this many coal or nitrate items per bottle.
+grayscale_resources_in_recipe = 10
+# Opening a grayscale dye gives coal and nitrate, but is lossy by this much per resource.
+open_grayscale_loss = 1
 
 
-def id_suffix(rgb_color) :
+def id_suffix(rgb_color):
     return f'{rgb_color[0]}_{rgb_color[1]}_{rgb_color[2]}'
 
 
@@ -63,7 +67,7 @@ def generate_mod_info():
     <DisplayName value="7 Dyes to die for" />
     <Description value="Generated mod that potentially adds heaps of dyes with its own dye mixing recipes. 'Open' dye bottles to turn them into pigment powder." />
     <Author value="Synchronleuchter" />
-    <Version value="2.1.1" />
+    <Version value="2.2" />
 </xml>
 '''
     original_stdout = sys.stdout

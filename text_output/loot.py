@@ -3,7 +3,7 @@ from text_output import common
 
 prefix = '''<configs>'''
 
-suffix = '''<append xpath="/lootcontainers/lootgroup[starts-with(@name, 'groupLaundry0')]"> <item name="dyes" count="1" loot_prob_template="low" /></append>
+suffix = '''<append xpath="/lootcontainers/lootgroup[starts-with(@name, 'groupLaundry0')]"> <item group="dyes" count="1" loot_prob_template="low" /></append>
 </configs>'''
 
 

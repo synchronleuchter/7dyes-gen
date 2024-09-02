@@ -1,9 +1,36 @@
 from text_output import common
 import colors
+import math
 
 prefix = '''<configs>'''
 
 suffix = '''</configs>'''
+
+
+def grayscale_nitrate_amount(i, rgb_line):
+    nitrate_amount = (common.grayscale_resources_in_recipe * i) / (len(rgb_line) - 1)
+    if nitrate_amount >= common.grayscale_resources_in_recipe / 2:
+        return math.ceil(nitrate_amount)
+    else:
+        return math.floor(nitrate_amount)
+
+
+def pigment_open_action(pigment_dust_id):
+    return f'''<property class="Action0">
+        <property name="Class" value="OpenBundle"/>
+        <property name="Create_item" value="{pigment_dust_id}"/>
+        <property name="Create_item_count" value="1"/>
+    </property>'''
+
+
+def grayscale_open_action(nitrate_amount):
+    coal_amount = common.grayscale_resources_in_recipe - nitrate_amount
+    loss = common.open_grayscale_loss
+    return f'''<property class="Action0">
+            <property name="Class" value="OpenBundle"/>
+            <property name="Create_item" value="resourcePotassiumNitratePowder, resourceCoal"/>
+            <property name="Create_item_count" value="{max(nitrate_amount - loss, 0)}, {max(coal_amount - loss, 0)}"/>
+        </property>'''
 
 
 def body(i, hsv_cone, rgb_cone, rgb_line, v_steps, colors_per_hue, grayscale, pigment=False):
@@ -14,23 +41,19 @@ def body(i, hsv_cone, rgb_cone, rgb_line, v_steps, colors_per_hue, grayscale, pi
         description_key += 'Pigment'
     if grayscale:
         description_key += 'Grayscale'
+        open_action = grayscale_open_action(grayscale_nitrate_amount(i, rgb_line))
+    else:
+        corresponding_pigment = rgb_cone[colors.corresponding_pigment_index(i, colors_per_hue)]
+        pigment_dust_id = common.pigment_dust_id(corresponding_pigment)
+        open_action = pigment_open_action(pigment_dust_id)
     if common.color_id(rgb_color, pigment) == common.white_id():
         description_key += 'White'
     if common.color_id(rgb_color, pigment) == common.black_id():
         description_key += 'Black'
-
     color = f'{rgb_color[0]},{rgb_color[1]},{rgb_color[2]}'
-    corresponding_pigment = rgb_cone[colors.corresponding_pigment_index(i, colors_per_hue)]
-    # Grayscale colors can at least be turned into water, so they don't clutter up the inventory.
-    pigment_dust_id = common.pigment_dust_id(corresponding_pigment) if not grayscale else 'drinkJarRiverWater'
     # I wanted to have only pigment colors be part of looted clothing, but that's irrelevant as you can craft pigments
     # from any dye. That would've probably belonged in loot.xml.
     drop_chance = 'cosmetic_install_chance=".1"' if pigment else ''
-    open_action = f'''<property class="Action0">
-			<property name="Class" value="OpenBundle"/>
-			<property name="Create_item" value="{pigment_dust_id}"/>
-			<property name="Create_item_count" value="1"/>
-		</property>'''
     return f'''<append xpath="/item_modifiers">
 	<item_modifier name="{common.color_id(rgb_color, pigment)}" installable_tags="clothing,armor,weapon,tool,vehicle,drone" modifier_tags="dye" type="attachment" {drop_chance}>
 		<property name="Extends" value="modGeneralMaster"/>

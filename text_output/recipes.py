@@ -6,6 +6,14 @@ prefix = '''<configs>'''
 suffix = '''</configs>'''
 
 
+def count_trailing_zeroes(i, rgb_line):
+    if i % (len(rgb_line) - 1) == 0:
+        # Handle black and white: they have all the zeroes.
+        return (len(rgb_line) - 1).bit_length() - 1
+    # Mask the number and its two's complement to get a bit vector like 000010000
+    return (i & -i).bit_length() - 1
+
+
 def body(i, hsv_space, rgb_cone, rgb_line, v_steps, colors_per_hue, grayscale, pigment=False):
     gs_lookup = rgb_cone if not grayscale else rgb_line
     des_gs = gs_lookup
@@ -14,9 +22,11 @@ def body(i, hsv_space, rgb_cone, rgb_line, v_steps, colors_per_hue, grayscale, p
     des_idx = colors.desaturated_index(i, v_steps, colors_per_hue)
     dev_idx = colors.devalued_index(i, v_steps, colors_per_hue)
 
-    if grayscale:
-        des_idx = i + 1
-        dev_idx = i - 1
+    if grayscale and i % 2 == 0:
+        # Terminology is a bit off here: "desaturated index" is used as "brighter" and "devalued" as "darker".
+        tree_descent_step = 1 << (count_trailing_zeroes(i, rgb_line) - 1)
+        des_idx = i + tree_descent_step
+        dev_idx = i - tree_descent_step
     else:
         if des_idx < 0:
             des_idx *= -1
@@ -31,9 +41,9 @@ def body(i, hsv_space, rgb_cone, rgb_line, v_steps, colors_per_hue, grayscale, p
     # (I mean, this is a technical workaround, really.)
     if common.color_id(rgb_color, pigment) != common.white_id():
         desaturated = des_gs[des_idx]
-        if common.color_id(desaturated) != common.white_id():
-            # Do not waste pigments by turning them into gray.
-            if colors.is_grayscale(rgb_color) or not colors.is_grayscale(desaturated):
+        if common.color_id(desaturated) != common.white_id() and (common.color_id(rgb_color) != common.black_id()):
+            # Do not waste pigments by turning them into gray and don't generate two recipes for 50% gray.
+            if (colors.is_grayscale(rgb_color) and (i % 2 == 0)) or not colors.is_grayscale(desaturated):
                 retval += \
 f'''<append xpath="/recipes"><recipe name="{common.color_id(desaturated)}" count="2" craft_time="1">
     <ingredient name="{common.color_id(rgb_color, pigment)}" count="1"/>
@@ -45,7 +55,7 @@ f'''<append xpath="/recipes"><recipe name="{common.color_id(desaturated)}" count
     # (I mean, this is a technical workaround, really.)
     if common.color_id(rgb_color, pigment) != common.black_id():
         devalued = dev_gs[dev_idx]
-        if common.color_id(devalued) != common.black_id():
+        if common.color_id(devalued) != common.black_id() and (grayscale == (i % 2 == 0)):
             retval += \
 f'''<append xpath="/recipes"><recipe name="{common.color_id(devalued)}" count="2" craft_time="1">
 	<ingredient name="{common.color_id(rgb_color, pigment)}" count="1"/>
@@ -74,26 +84,26 @@ f'''<append xpath="/recipes"><recipe name="{common.color_id(corresponding_pigmen
     if common.color_id(rgb_color, pigment) == common.black_id():
         retval += \
 f'''<append xpath="/recipes"><recipe name="{common.black_id()}" craft_area="chemistryStation" count="1" craft_time="1">
-    <ingredient name="resourceCoal" count="10"/>
+    <ingredient name="resourceCoal" count="{common.grayscale_resources_in_recipe}"/>
     <ingredient name="resourceSnowBall" count="1"/>
 </recipe></append>
 '''
         retval += \
 f'''<append xpath="/recipes"><recipe name="{common.black_id()}" craft_area="campfire" count="1" craft_time="3">
-    <ingredient name="resourceCoal" count="10"/>
+    <ingredient name="resourceCoal" count="{common.grayscale_resources_in_recipe}"/>
     <ingredient name="resourceSnowBall" count="1"/>
 </recipe></append>
 '''
     if common.color_id(rgb_color, pigment) == common.white_id():
         retval += \
 f'''<append xpath="/recipes"><recipe name="{common.white_id()}" craft_area="chemistryStation" count="1" craft_time="1">
-    <ingredient name="resourcePotassiumNitratePowder" count="10"/>
+    <ingredient name="resourcePotassiumNitratePowder" count="{common.grayscale_resources_in_recipe}"/>
     <ingredient name="resourceSnowBall" count="1"/>
 </recipe></append>
 '''
         retval += \
 f'''<append xpath="/recipes"><recipe name="{common.white_id()}" craft_area="campfire" count="1" craft_time="3">
-    <ingredient name="resourcePotassiumNitratePowder" count="10"/>
+    <ingredient name="resourcePotassiumNitratePowder" count="{common.grayscale_resources_in_recipe}"/>
     <ingredient name="resourceSnowBall" count="1"/>
 </recipe></append>
 '''
