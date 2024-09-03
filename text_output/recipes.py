@@ -41,9 +41,13 @@ def body(i, hsv_space, rgb_cone, rgb_line, v_steps, colors_per_hue, grayscale, p
     # (I mean, this is a technical workaround, really.)
     if common.color_id(rgb_color, pigment) != common.white_id():
         desaturated = des_gs[des_idx]
-        if common.color_id(desaturated) != common.white_id() and (common.color_id(rgb_color) != common.black_id()):
+        would_yield_white = common.color_id(desaturated) == common.white_id()
+        is_itself_black = common.color_id(rgb_color) == common.black_id()
+        if not (would_yield_white or is_itself_black):
             # Do not waste pigments by turning them into gray and don't generate two recipes for 50% gray.
-            if (colors.is_grayscale(rgb_color) and (i % 2 == 0)) or not colors.is_grayscale(desaturated):
+            # Don't mix leaf grayscale colors.
+            is_mixable_grayscale = grayscale and i % 2 == 0
+            if is_mixable_grayscale or not colors.is_grayscale(desaturated):
                 retval += \
 f'''<append xpath="/recipes"><recipe name="{common.color_id(desaturated)}" count="2" craft_time="1">
     <ingredient name="{common.color_id(rgb_color, pigment)}" count="1"/>
@@ -55,7 +59,11 @@ f'''<append xpath="/recipes"><recipe name="{common.color_id(desaturated)}" count
     # (I mean, this is a technical workaround, really.)
     if common.color_id(rgb_color, pigment) != common.black_id():
         devalued = dev_gs[dev_idx]
-        if common.color_id(devalued) != common.black_id() and (grayscale == (i % 2 == 0)):
+        would_yield_black = common.color_id(devalued) == common.black_id()
+        # Grayscale mixing describes a tree, the leaves of which cannot be further mixed. The leaves are exactly
+        # those colors with an odd index.
+        is_leaf_grayscale = grayscale and i % 2 == 1
+        if not (would_yield_black or is_leaf_grayscale):
             retval += \
 f'''<append xpath="/recipes"><recipe name="{common.color_id(devalued)}" count="2" craft_time="1">
 	<ingredient name="{common.color_id(rgb_color, pigment)}" count="1"/>
